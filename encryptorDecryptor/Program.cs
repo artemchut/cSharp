@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using Microsoft.VisualBasic;
 
 namespace encrypter
 {
@@ -39,6 +40,15 @@ namespace encrypter
                         encriptedWord += encrWord[i];
                         continue;
                     }
+                    //when sameLetters==stepFirst-start from the very start to keep it more secure(not the same pattern)
+                    if (sameLetters > 0)
+                    {
+                        if (sameLetters%stepFirst==0)
+                        {
+                            sameLetters=0;
+                            usedLetters.Clear();
+                        }   
+                    }
 
                     //shift by twice as much when the char appears for the second++ time
                     if (usedLetters.Contains(encrWord[i]))
@@ -69,14 +79,15 @@ namespace encrypter
                 Console.Write("Enter a word to be decripted: ");
                 String? decrWord = Console.ReadLine().ToLower();
                 Console.Write("Enter ur key separated with ' ': ");
-                String decrKeyInp = Console.ReadLine();
+                String? decrKeyInp = Console.ReadLine();
 
                 List<int> decrKey = decrKeyInp.Split(' ').Select(int.Parse).ToList();
 
                 int keyValuesUsed = 1;
 
-                int steps = Convert.ToInt32(decrKey[0]);
+                int steps = decrKey[0];
                 int firstStep = steps;
+                int sameChars=1;
 
                 for (int i = 0; i < decrWord.Length; i++)
                 {
@@ -87,18 +98,25 @@ namespace encrypter
                         continue;
                     }
 
+                    //decoding the extra safety pattern
+                    if ((firstStep+1)%sameChars==0)
+                    {
+                        sameChars=1;
+                    }     
+
                     //if i==index of a letter that appeared twice when encripting then *2
                     if (keyValuesUsed < decrKey.Count && i == decrKey[keyValuesUsed])
                     {
-                        for (int k = 0; k < keyValuesUsed; k++)
+                        for (int k = 0; k < sameChars; k++)
                         {
                             steps += firstStep;
                         }
 
-                        //increasing the num of letters that appeared more than once that were used up
+                        //increasing the num of letters that appeered more than once that were used up
                         if (keyValuesUsed < decrKey.Count - 1)
                         {
                             keyValuesUsed++;
+                            sameChars++;
                         }
                     }
 
