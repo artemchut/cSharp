@@ -51,8 +51,8 @@ namespace encrypter
                     }
                     if (i==encrWord.Length/2)
                     {
-                        stepFirst = random.Next(1, 26);
-                        while (stepFirst == 13)
+                        int stepFirst2 = random.Next(1, 26);
+                        while (stepFirst == 13 || stepFirst2==stepFirst)
                         {
                             stepFirst = random.Next(1, 26);
                         }
